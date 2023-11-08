@@ -3,7 +3,7 @@ import { Subscribable, Subscriber, Subscription } from "./interfaces";
 export abstract class AbstractSubscribable<T> implements Subscribable<T> {
   protected readonly subscribers: Subscriber<T>[] = [];
 
-  subscribe(subscriber: Subscriber<T>): Subscription {
+  public subscribe(subscriber: Subscriber<T>): Subscription {
     this.subscribers.push(subscriber);
     const self = this;
     return {

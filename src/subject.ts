@@ -1,5 +1,5 @@
-import { AbstractSubscribable } from "./abstract-subscribable";
-import { Distributor } from "./distributor";
+import { AbstractSubscribable } from "./abstract.subscribable";
+import { Distributor } from "./distributors";
 import { Publisher } from "./interfaces";
 
 export class Subject<T>
