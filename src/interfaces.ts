@@ -8,10 +8,6 @@ export interface Subscription {
   unsubscribe(): void;
 }
 
-export interface Subscribable<T> {
-  subscribe(subscriber: Subscriber<T>): Subscription;
-}
-
 export interface Publisher<T> {
   publish(event: T): void;
   throwError(err: Error): void

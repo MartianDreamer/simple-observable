@@ -1,14 +1,13 @@
 import { AbstractSubscribable } from "./abstract.subscribable";
 import {
   Predicate,
-  Subscribable,
   Subscriber,
   Subscription,
   UnaryOperator
 } from "./interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
-  protected readonly source: Subscribable<T>;
+  protected readonly source: AbstractSubscribable<T>;
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
@@ -28,7 +27,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
   };
 
   constructor(
-    source: Subscribable<any>,
+    source: AbstractSubscribable<any>,
   ) {
     super();
     this.source = source;
@@ -70,7 +69,7 @@ class TransformationDistributor<T, R> extends Distributor<R> {
     },
   };
 
-  constructor(source: Subscribable<T>, op: UnaryOperator<T,R>) {
+  constructor(source: AbstractSubscribable<T>, op: UnaryOperator<T,R>) {
     super(source);
     this.transform = op;
   }
@@ -99,7 +98,7 @@ class FilteredDistributor<T> extends Distributor<T> {
     },
   };
 
-  constructor(source: Subscribable<T>, predicate: Predicate<T>) {
+  constructor(source: AbstractSubscribable<T>, predicate: Predicate<T>) {
     super(source);
     this.predicate = predicate;
   }

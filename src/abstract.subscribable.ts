@@ -1,6 +1,6 @@
-import { Subscribable, Subscriber, Subscription } from "./interfaces";
+import { Subscriber, Subscription } from "./interfaces";
 
-export abstract class AbstractSubscribable<T> implements Subscribable<T> {
+export abstract class AbstractSubscribable<T> {
   protected subscribers: Subscriber<T>[] = [];
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
