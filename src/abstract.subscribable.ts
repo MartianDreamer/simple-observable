@@ -1,15 +1,14 @@
 import { Subscribable, Subscriber, Subscription } from "./interfaces";
 
 export abstract class AbstractSubscribable<T> implements Subscribable<T> {
-  protected readonly subscribers: Subscriber<T>[] = [];
+  protected subscribers: Subscriber<T>[] = [];
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    this.subscribers.push(subscriber);
+    this.subscribers = [...this.subscribers, subscriber];
     const self = this;
     return {
       unsubscribe() {
-        const index = self.subscribers.indexOf(subscriber);
-        self.subscribers.splice(index, 1);
+        self.subscribers = self.subscribers.filter((e: Subscriber<T>) => e !== subscriber)
       },
     };
   }

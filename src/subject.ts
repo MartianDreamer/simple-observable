@@ -14,11 +14,12 @@ export class Subject<T>
     }
   }
 
-  public finish(): void {
+  public complete(): void {
     this.isDone = true;
     for (let subscriber of this.subscribers) {
       if (subscriber.final) subscriber.final();
     }
+    this.subscribers = [];
   }
 
   public publish(change: T): void {

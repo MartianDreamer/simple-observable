@@ -15,7 +15,7 @@ export interface Subscribable<T> {
 export interface Publisher<T> {
   publish(event: T): void;
   throwError(err: Error): void
-  finish(): void;
+  complete(): void;
 }
 
 export interface UnaryOperator<T, R> {
