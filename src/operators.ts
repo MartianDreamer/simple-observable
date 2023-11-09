@@ -1,8 +1,8 @@
 import { AbstractSubscribable } from "./abstract.subscribable";
-import { Distributor } from "./distributor";
-import { FilteredDistributor } from "./filtered.distributor";
+import { Distributor } from "./distributor/distributor";
+import { FilteredDistributor } from "./distributor/filtered.distributor";
 import { MappingFunction, Predicate, UnaryOperator } from "./interfaces";
-import { TransformationDistributor } from "./transformation.distributor";
+import { TransformationDistributor } from "./distributor/transformation.distributor";
 
 export function map<T, R>(fn: MappingFunction<T, R>): UnaryOperator<T, R> {
   return function (distributor: AbstractSubscribable<T>): Distributor<R> {

@@ -1,5 +1,5 @@
 import { AbstractSubscribable } from "./abstract.subscribable";
-import { Distributor } from "./distributor";
+import { Distributor } from "./distributor/distributor";
 
 export interface Subscriber<T> {
   next(event: T): void;

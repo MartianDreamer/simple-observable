@@ -1,6 +1,6 @@
-import { AbstractSubscribable } from "./abstract.subscribable";
+import { AbstractSubscribable } from "../abstract.subscribable";
 import { Distributor } from "./distributor";
-import { Predicate, Subscriber } from "./interfaces";
+import { Predicate, Subscriber } from "../interfaces";
 
 export class FilteredDistributor<T> extends Distributor<T> {
   private readonly predicate: Predicate<T>;

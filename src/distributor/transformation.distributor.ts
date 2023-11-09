@@ -1,6 +1,6 @@
-import { AbstractSubscribable } from "./abstract.subscribable";
+import { AbstractSubscribable } from "../abstract.subscribable";
 import { Distributor } from "./distributor";
-import { MappingFunction, Subscriber } from "./interfaces";
+import { MappingFunction, Subscriber } from "../interfaces";
 
 export class TransformationDistributor<T, R> extends Distributor<R> {
   private readonly transform: MappingFunction<T, R>;

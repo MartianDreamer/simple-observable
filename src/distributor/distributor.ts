@@ -1,5 +1,5 @@
-import { AbstractSubscribable } from "./abstract.subscribable";
-import { Subscriber, Subscription, UnaryOperator } from "./interfaces";
+import { AbstractSubscribable } from "../abstract.subscribable";
+import { Subscriber, Subscription, UnaryOperator } from "../interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
   private subscribedSources = false;

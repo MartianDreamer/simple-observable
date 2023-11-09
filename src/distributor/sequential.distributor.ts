@@ -1,5 +1,5 @@
 import { Distributor } from "./distributor";
-import { Subscriber, Subscription } from "./interfaces";
+import { Subscriber, Subscription } from "../interfaces";
 
 export class SequentialDistributor<T> extends Distributor<T> {
   public subscribe(subscriber: Subscriber<T>): Subscription {

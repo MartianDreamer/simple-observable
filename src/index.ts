@@ -1,4 +1,4 @@
-import { Distributor } from "./distributor";
+import { Distributor } from "./distributor/distributor";
 import { map, mergeWith } from "./operators";
 import { Subject } from "./subject";
 
