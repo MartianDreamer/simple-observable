@@ -38,7 +38,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     return new TransformationDistributor(this, op);
   }
 
-  filter(predicate: Predicate<T>) {
+  public filter(predicate: Predicate<T>) {
     return new FilteredDistributor(this, predicate);
   }
 
@@ -46,6 +46,11 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     this.source.subscribe(this.sourceSubscriber);
     return super.subscribe(subscriber);   
   }
+
+  public pipe(...ops: UnaryOperator<any,any>[]): Distributor<any> {
+    //TODO - implement it
+    return new Distributor(this);
+  } 
 }
 
 class TransformationDistributor<T, R> extends Distributor<R> {
