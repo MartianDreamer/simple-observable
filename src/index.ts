@@ -1,18 +1,18 @@
 import { Distributor } from "./distributor";
-import { map, merge } from "./operators";
+import { map, mergeWith } from "./operators";
 import { Subject } from "./subject";
 
 const sub: Subject<number> = new Subject();
 const sub2: Subject<string> = new Subject();
-const dist: Distributor<number> = sub.asDistributor().pipe(
-  map(e => Math.floor(e*100)),
-  merge(sub2),
+const dist: Distributor<number | string> = sub.asDistributor().pipe(
+  map((e) => Math.floor(e * 100)),
+  mergeWith(sub2)
 );
-dist.subscribe({ next: (e) => console.log(e - 1)  });
+dist.subscribe({ next: console.log });
 setInterval(() => {
   sub.publish(Math.random());
 }, 1000);
 
 setInterval(() => {
-  sub2.publish("hello")
-}, 4000)
+  sub2.publish("hello");
+}, 4000);

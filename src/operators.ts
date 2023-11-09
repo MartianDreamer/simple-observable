@@ -16,10 +16,8 @@ export function filter<T>(predicate: Predicate<T>): UnaryOperator<T, T> {
   }
 }
 
-export function merge<A, B>(sub: AbstractSubscribable<B>): UnaryOperator<A, A | B>;
-export function merge<A, B, C>(sub1: AbstractSubscribable<B>, sub2: AbstractSubscribable<C>): UnaryOperator<A, A | B | C>;
-export function merge<A>(...sources: AbstractSubscribable<any>[]): UnaryOperator<A, any> {
-  return function (distributor: AbstractSubscribable<A>): Distributor<any> {
-    return new Distributor(distributor, ...sources);
+export function mergeWith<T, R> (source: AbstractSubscribable<R>): UnaryOperator<T, T | R> {
+  return function (distributor: AbstractSubscribable<T>): Distributor<T | R> {
+    return new Distributor<T | R>(distributor, source);
   }
 }
