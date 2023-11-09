@@ -9,6 +9,11 @@ const dist: Distributor<number | string> = sub.asDistributor().pipe(
   mergeWith(sub2)
 );
 dist.subscribe({ next: console.log });
+dist.subscribe({
+  next(e) {
+    console.log(`e is ${e}`);
+  },
+});
 setInterval(() => {
   sub.publish(Math.random());
 }, 1000);

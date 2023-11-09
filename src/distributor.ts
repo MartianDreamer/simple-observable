@@ -1,11 +1,8 @@
 import { AbstractSubscribable } from "./abstract.subscribable";
-import {
-  Subscriber,
-  Subscription,
-  UnaryOperator
-} from "./interfaces";
+import { Subscriber, Subscription, UnaryOperator } from "./interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
+  private subscribedSources = false;
   protected readonly sources: AbstractSubscribable<T>[];
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
@@ -31,7 +28,10 @@ export class Distributor<T> extends AbstractSubscribable<T> {
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    this.sources.forEach(source => source.subscribe(this.sourceSubscriber));
+    if (!this.subscribedSources) {
+      this.sources.forEach((source) => source.subscribe(this.sourceSubscriber));
+      this.subscribedSources = true;
+    }
     return super.subscribe(subscriber);
   }
 
@@ -64,7 +64,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     op3: UnaryOperator<C, D>,
     op4: UnaryOperator<D, E>,
     op5: UnaryOperator<E, F>,
-    op6: UnaryOperator<F, G>,
+    op6: UnaryOperator<F, G>
   ): Distributor<G>;
   pipe<B, C, D, E, F, G, H>(
     op1: UnaryOperator<T, B>,
@@ -73,7 +73,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     op4: UnaryOperator<D, E>,
     op5: UnaryOperator<E, F>,
     op6: UnaryOperator<F, G>,
-    op7: UnaryOperator<G, H>,
+    op7: UnaryOperator<G, H>
   ): Distributor<H>;
   pipe<B, C, D, E, F, G, H, I>(
     op1: UnaryOperator<T, B>,
@@ -83,7 +83,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     op5: UnaryOperator<E, F>,
     op6: UnaryOperator<F, G>,
     op7: UnaryOperator<G, H>,
-    op8: UnaryOperator<H, I>,
+    op8: UnaryOperator<H, I>
   ): Distributor<I>;
   public pipe(...ops: UnaryOperator<any, any>[]): Distributor<any> {
     let result: Distributor<any> = this;
