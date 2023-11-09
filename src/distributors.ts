@@ -69,6 +69,7 @@ class TransformationDistributor<T, R> extends Distributor<R> {
     },
   };
 
+  constructor(source: AbstractSubscribable<T>, op: UnaryOperator<T,R>);
   constructor(source: AbstractSubscribable<any>, op: UnaryOperator<T,R>) {
     super(source);
     this.transform = op;
