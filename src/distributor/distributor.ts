@@ -2,7 +2,7 @@ import { AbstractSubscribable } from "../abstract.subscribable";
 import { Subscriber, Subscription, UnaryOperator } from "../interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
-  private subscribedSources = false;
+  protected subscribedSources = false;
   protected readonly sources: AbstractSubscribable<T>[];
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {

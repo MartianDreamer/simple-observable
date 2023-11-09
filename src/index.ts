@@ -1,23 +1,24 @@
 import { Distributor } from "./distributor/distributor";
-import { map, mergeWith } from "./operators";
+import { concatWith, map } from "./operators";
 import { Subject } from "./subject";
 
 const sub: Subject<number> = new Subject();
 const sub2: Subject<string> = new Subject();
 const dist: Distributor<number | string> = sub.asDistributor().pipe(
   map((e) => Math.floor(e * 100)),
-  mergeWith(sub2)
+  concatWith(sub2)
 );
 dist.subscribe({ next: console.log });
-dist.subscribe({
-  next(e) {
-    console.log(`e is ${e}`);
-  },
-});
-setInterval(() => {
+const int1 = setInterval(() => {
   sub.publish(Math.random());
 }, 1000);
 
 setInterval(() => {
   sub2.publish("hello");
+  console.log("hello is emitted");
 }, 4000);
+
+setTimeout(() => {
+  clearInterval(int1);
+  sub.complete();
+}, 5000);
