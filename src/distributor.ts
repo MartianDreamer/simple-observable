@@ -6,7 +6,7 @@ import {
 } from "./interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
-  protected sources: AbstractSubscribable<T>[];
+  protected readonly sources: AbstractSubscribable<T>[];
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {

@@ -21,3 +21,7 @@ export function mergeWith<T, R> (source: AbstractSubscribable<R>): UnaryOperator
     return new Distributor<T | R>(distributor, source);
   }
 }
+
+// export function concat<T,R> (source: AbstractSubscribable<R>): UnaryOperator<T, T | R> {
+
+// }
