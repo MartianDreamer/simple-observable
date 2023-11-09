@@ -1,15 +1,15 @@
 {
-  "name": "simple-observable",
+  "name": "simple-ts-pubsub",
   "version": "1.0.0",
-  "description": "simple observable",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
+  "description": "simple-ts-pubsub",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "compile": "rm -r ./dist/lib && tsc"
   },
-  "author": "martiandreamer",
-  "license": "MIT"
+  "author": "MartianDreamer",
+  "license": "MIT",
+  "repository": "git@github.com:MartianDreamer/simple-ts-pubsub.git",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
 }
