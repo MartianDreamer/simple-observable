@@ -28,7 +28,3 @@ export interface Predicate<T> {
 export interface UnaryOperator<T,R> {
   (input: AbstractSubscribable<T>): Distributor<R>
 }
-
-export interface DistributorMappingFunction<T, R> {
-  (input: T): AbstractSubscribable<R>
-}
