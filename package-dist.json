@@ -9,8 +9,7 @@
     "url": "https://github.com/MartianDreamer/simple-ts-pubsub/tree/master"
   },
   "files": [
-    "dist/**/*",
-    "package.json"
+    "**/*"
   ],
   "keywords": [
     "typescript",
@@ -21,12 +20,5 @@
   "bugs": {
     "url": "https://github.com/MartianDreamer/simple-ts-pubsub/issues"
   },
-  "homepage": "https://github.com/MartianDreamer/simple-ts-pubsub#readme",
-  "scripts": {
-    "test": "test",
-    "compile": "rm -r ./dist && tsc && cp package-dist.json dist/package.json"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.2"
-  }
+  "homepage": "https://github.com/MartianDreamer/simple-ts-pubsub#readme"
 }
