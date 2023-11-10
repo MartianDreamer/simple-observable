@@ -6,7 +6,7 @@ export class Subject<T>
   extends AbstractSubscribable<T>
   implements Publisher<T>
 {
-  private isDone: boolean = false;
+  protected completed: boolean = false;
 
   public throwError(err: Error): void {
     for (let subscriber of this.subscribers) {
@@ -15,7 +15,7 @@ export class Subject<T>
   }
 
   public complete(): void {
-    this.isDone = true;
+    this.completed = true;
     for (let subscriber of this.subscribers) {
       if (subscriber.final) subscriber.final();
     }
@@ -23,7 +23,7 @@ export class Subject<T>
   }
 
   public publish(event: T): void {
-    if (this.isDone) {
+    if (this.completed) {
       throw new Error("this change source is finished");
     }
     for (let subscriber of this.subscribers) {
@@ -33,5 +33,9 @@ export class Subject<T>
 
   public asDistributor(): Distributor<T> {
     return new Distributor(this);
+  }
+
+  isComplete(): boolean {
+    return this.completed;
   }
 }

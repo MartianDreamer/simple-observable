@@ -1,19 +1,14 @@
-import { AbstractSubscribable } from "../abstract.subscribable";
-import { Distributor } from "../distributor/distributor";
-import { Publisher, Subscriber, Subscription } from "../interfaces";
+import {Subscriber, Subscription} from "../interfaces";
+import {Subject} from './subject';
 
-export class BufferedSubject<T>
-  extends AbstractSubscribable<T>
-  implements Publisher<T>
-{
-  protected isDone: boolean = false;
+export class BufferedSubject<T> extends Subject<T>{
   private buffer: T[] = [];
   constructor(private size: number) {
     super();
   }
 
   publish(event: T): void {
-    if (this.isDone) {
+    if (this.completed) {
       throw new Error("this change source is finished");
     }
     if (this.buffer.length === this.size) {
@@ -31,23 +26,5 @@ export class BufferedSubject<T>
       subscriber.next(event);
     }
     return super.subscribe(subscriber);
-  }
-
-  public throwError(err: Error): void {
-    for (let subscriber of this.subscribers) {
-      if (subscriber.err) subscriber.err(err);
-    }
-  }
-
-  public complete(): void {
-    this.isDone = true;
-    for (let subscriber of this.subscribers) {
-      if (subscriber.final) subscriber.final();
-    }
-    this.subscribers = [];
-  }
-
-  public asDistributor(): Distributor<T> {
-    return new Distributor(this);
   }
 }

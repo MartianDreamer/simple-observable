@@ -15,6 +15,7 @@ export interface Publisher<T> {
   publish(event: T): void;
   throwError(err: Error): void
   complete(): void;
+  isComplete(): boolean
 }
 
 export interface MappingFunction<T, R> {

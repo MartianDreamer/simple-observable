@@ -1,6 +1,6 @@
 import { BufferedSubject } from "../../src/subject/buffered.subject";
 
-describe("bufferd subject", () => {
+describe("buffered subject", () => {
   test("buffered subject buffer previous events", () => {
     const sub: BufferedSubject<number> = new BufferedSubject(3);
     const value: number[] = [];
