@@ -23,10 +23,16 @@
   },
   "homepage": "https://github.com/MartianDreamer/simple-ts-pubsub#readme",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "compile": "rm -r ./dist && tsc && cp package-dist.json dist/package.json"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@jest/globals": "^29.7.0"
   }
 }
