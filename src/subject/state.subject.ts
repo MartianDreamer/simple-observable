@@ -8,6 +8,9 @@ export class StateSubject<T> extends Subject<T> {
   }
 
   publish(event: T) {
+    if (this.completed) {
+      throw new Error("this subject source completed")
+    }
     this.state = event;
     super.publish(event);
   }

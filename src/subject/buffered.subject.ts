@@ -9,7 +9,7 @@ export class BufferedSubject<T> extends Subject<T>{
 
   publish(event: T): void {
     if (this.completed) {
-      throw new Error("this change source is finished");
+      throw new Error("this subject source completed");
     }
     if (this.buffer.length === this.size) {
       this.buffer = [...this.buffer.slice(1, this.size), event];

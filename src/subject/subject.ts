@@ -24,7 +24,7 @@ export class Subject<T>
 
   public publish(event: T): void {
     if (this.completed) {
-      throw new Error("this change source is finished");
+      throw new Error("this subject source completed");
     }
     for (let subscriber of this.subscribers) {
       subscriber.next(event);
