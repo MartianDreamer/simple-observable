@@ -1,4 +1,4 @@
-import { BufferedSubject } from "./buffered.subject";
+import { BufferedSubject } from "../../src/subject/buffered.subject";
 
 describe("bufferd subject", () => {
   test("buffered subject buffer previous events", () => {
