@@ -1,6 +1,6 @@
-import { AbstractSubscribable } from "./abstract.subscribable";
-import { Distributor } from "./distributor/distributor";
-import { Publisher } from "./interfaces";
+import { AbstractSubscribable } from "../abstract.subscribable";
+import { Distributor } from "../distributor/distributor";
+import { Publisher } from "../interfaces";
 
 export class Subject<T>
   extends AbstractSubscribable<T>
@@ -22,12 +22,12 @@ export class Subject<T>
     this.subscribers = [];
   }
 
-  public publish(change: T): void {
+  public publish(event: T): void {
     if (this.isDone) {
       throw new Error("this change source is finished");
     }
     for (let subscriber of this.subscribers) {
-      subscriber.next(change);
+      subscriber.next(event);
     }
   }
 

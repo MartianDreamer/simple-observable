@@ -1,5 +1,5 @@
 import { concatWith } from "../operators";
-import { Subject } from "../subject";
+import { Subject } from "../subject/subject";
 
 describe("sequential distributor", () => {
   afterAll((done) => {
