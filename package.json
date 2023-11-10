@@ -1,14 +1,31 @@
 {
-  "name": "simple-ts-pubsub",
-  "version": "1.0.0",
-  "description": "simple-ts-pubsub",
-  "scripts": {
-    "test": "test",
-    "compile": "rm -r ./dist/lib && tsc"
+  "name": "@martiandreamer/simple-pupsub",
+  "version": "0.0.1",
+  "description": "A simple pubsub lib in ts",
+  "module": "lib/index.js",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MartianDreamer/simple-ts-pubsub/tree/master"
   },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "keywords": [
+    "typescript",
+    "pubsub"
+  ],
   "author": "MartianDreamer",
   "license": "MIT",
-  "repository": "git@github.com:MartianDreamer/simple-ts-pubsub.git",
+  "bugs": {
+    "url": "https://github.com/MartianDreamer/simple-ts-pubsub/issues"
+  },
+  "homepage": "https://github.com/MartianDreamer/simple-ts-pubsub#readme",
+  "scripts": {
+    "test": "test",
+    "compile": "rm -r ./dist && tsc"
+  },
   "devDependencies": {
     "typescript": "^5.2.2"
   }
