@@ -1,9 +1,9 @@
-import { AbstractSubscribable } from "../abstract.subscribable";
-import {Subscribable, Subscriber, Subscription, UnaryOperator} from "../interfaces";
+import {AbstractSubscribable} from "../abstract.subscribable";
+import {SourceSubscription, Subscribable, Subscriber, Subscription, UnaryOperator} from "../interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
   protected joinedSources: boolean = false;
-  protected readonly sources: Subscribable<T>[];
+  protected readonly sources: SourceSubscription<T>[];
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
@@ -16,6 +16,7 @@ export class Distributor<T> extends AbstractSubscribable<T> {
       });
     },
     final: () => {
+      // TODO - it's not correct now, the final methods of subscribers are called multiple time, fix it
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
         if (subscriber.final) subscriber.final();
       });
@@ -24,12 +25,19 @@ export class Distributor<T> extends AbstractSubscribable<T> {
 
   constructor(...sources: Subscribable<T>[]) {
     super();
-    this.sources = sources;
+    this.sources = sources.map(e => {
+      return {
+        source: e,
+        completed: false
+      }
+    });
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
     if (!this.joinedSources) {
-      this.sources.forEach((source) => source.subscribe(this.sourceSubscriber));
+      this.sources.forEach((source) => {
+        source.subscription = source.source.subscribe(this.sourceSubscriber);
+      })
       this.joinedSources = true;
     }
     return super.subscribe(subscriber);
@@ -95,5 +103,10 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     } else {
       return new Distributor(result);
     }
+  }
+
+  public isComplete(): boolean {
+    //TODO - implement a function to check if a distributor completed
+    return true;
   }
 }

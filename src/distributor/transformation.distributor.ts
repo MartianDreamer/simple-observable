@@ -4,20 +4,11 @@ import {MappingFunction, Subscribable, Subscriber} from "../interfaces";
 export class TransformationDistributor<T, R> extends Distributor<R> {
   private readonly transform: MappingFunction<T, R>;
   protected sourceSubscriber: Subscriber<any> = {
+    ...super.sourceSubscriber,
     next: (event: T) => {
       const transformedEvent = this.transform(event);
       this.subscribers.forEach((subscriber: Subscriber<R>) => {
         subscriber.next(transformedEvent);
-      });
-    },
-    err: (err: Error) => {
-      this.subscribers.forEach((subscriber: Subscriber<R>) => {
-        if (subscriber.err) subscriber.err(err);
-      });
-    },
-    final: () => {
-      this.subscribers.forEach((subscriber: Subscriber<R>) => {
-        if (subscriber.final) subscriber.final();
       });
     },
   };

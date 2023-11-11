@@ -1,6 +1,8 @@
 export interface Subscriber<T> {
   next(event: T): void;
+
   err?(err: Error): void;
+
   final?(): void;
 }
 
@@ -14,9 +16,12 @@ export interface Subscription {
 
 export interface Publisher<T> {
   publish(event: T): void;
-  throwError(err: Error): void
+
+  throwError(err: Error): void;
+
   complete(): void;
-  isComplete(): boolean
+
+  isComplete(): boolean;
 }
 
 export interface MappingFunction<T, R> {
@@ -27,10 +32,12 @@ export interface Predicate<T> {
   (input: T): boolean
 }
 
-export interface UnaryOperator<T,R> {
+export interface UnaryOperator<T, R> {
   (input: Subscribable<T>): Subscribable<R>
 }
 
-export interface DistributorSource<T> {
-
+export interface SourceSubscription<T> {
+  source: Subscribable<T>;
+  subscription?: Subscription;
+  completed: boolean;
 }
