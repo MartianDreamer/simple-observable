@@ -1,12 +1,22 @@
-import { AbstractSubscribable } from "../abstract.subscribable";
-import { Distributor } from "../distributor/distributor";
-import { Publisher } from "../interfaces";
+import {ConcurrentDistributor} from "../distributor/concurrent.distributor";
+import {Publisher, Subscribable, Subscriber, Subscription} from "../interfaces";
 
 export class Subject<T>
-  extends AbstractSubscribable<T>
-  implements Publisher<T>
-{
+  implements Publisher<T>, Subscribable<T> {
   protected completed: boolean = false;
+  protected subscribers: Subscriber<T>[] = [];
+
+  public subscribe(subscriber: Subscriber<T>): Subscription {
+    if (this.completed) {
+      throw new Error("this publisher already completed")
+    }
+    this.subscribers = [...this.subscribers, subscriber];
+    return {
+      unsubscribe: () => {
+        this.subscribers = this.subscribers.filter((e: Subscriber<T>) => e !== subscriber)
+      },
+    };
+  }
 
   public throwError(err: Error): void {
     for (let subscriber of this.subscribers) {
@@ -17,7 +27,7 @@ export class Subject<T>
   public complete(): void {
     this.completed = true;
     for (let subscriber of this.subscribers) {
-      if (subscriber.final) subscriber.final();
+      if (subscriber.complete) subscriber.complete();
     }
     this.subscribers = [];
   }
@@ -31,8 +41,8 @@ export class Subject<T>
     }
   }
 
-  public asDistributor(): Distributor<T> {
-    return new Distributor(this);
+  public asDistributor(): ConcurrentDistributor<T> {
+    return new ConcurrentDistributor(this);
   }
 
   isComplete(): boolean {

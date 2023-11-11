@@ -3,7 +3,7 @@ export interface Subscriber<T> {
 
   err?(err: Error): void;
 
-  final?(): void;
+  complete?(): void;
 }
 
 export interface Subscribable<T> {
@@ -33,11 +33,15 @@ export interface Predicate<T> {
 }
 
 export interface UnaryOperator<T, R> {
-  (input: Subscribable<T>): Subscribable<R>
+  (input: Subscribable<T>): Distributor<R>
 }
 
 export interface SourceSubscription<T> {
   source: Subscribable<T>;
   subscription?: Subscription;
-  completed: boolean;
+  subscribed: boolean;
+}
+
+export interface Distributor<T> extends Subscribable<T> {
+  pipe(...ops: UnaryOperator<any, any>[]): Distributor<any>;
 }
