@@ -1,8 +1,8 @@
-import {ConcurrentDistributor} from './concurrent.distributor';
-import {Subscriber} from '../interfaces';
+import {Subscriber, Subscription} from '../interfaces';
+import {MultiSourceDistributor} from './multi.source.distributor';
 
 // TODO - implement this class
-export class SwitchDistributor<T> extends ConcurrentDistributor<T> {
+export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {
     next(event: T) {
     },
@@ -11,4 +11,11 @@ export class SwitchDistributor<T> extends ConcurrentDistributor<T> {
     complete() {
     }
   };
+
+  subscribe(subscriber: Subscriber<T>): Subscription {
+    return {
+      unsubscribe() {
+      }
+    }
+  }
 }

@@ -1,9 +1,7 @@
-import {SourceSubscription, Subscribable, Subscriber, Subscription} from "../interfaces";
-import {AbstractDistributor} from './abstract.distributor';
+import {Subscribable, Subscriber, Subscription} from "../interfaces";
+import {MultiSourceDistributor} from './multi.source.distributor';
 
-export class ConcurrentDistributor<T> extends AbstractDistributor<T> {
-  protected isStreaming: boolean = false;
-  protected readonly sourceSubscriptions: SourceSubscription<T>[];
+export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
@@ -18,13 +16,7 @@ export class ConcurrentDistributor<T> extends AbstractDistributor<T> {
   };
 
   constructor(...sources: Subscribable<T>[]) {
-    super();
-    this.sourceSubscriptions = sources.map(e => {
-      return {
-        source: e,
-        subscribed: false
-      }
-    });
+    super(sources);
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
