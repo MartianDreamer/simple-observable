@@ -1,5 +1,5 @@
-import {concatWith} from "../../src";
 import {Subject} from "../../src";
+import {SequentialDistributor} from '../../src/distributor/sequential.distributor';
 
 describe("sequential distributor", () => {
   afterAll((done) => {
@@ -8,10 +8,8 @@ describe("sequential distributor", () => {
   test("concat 2 subject", () => {
     const sub1 = new Subject<string>();
     const sub2 = new Subject<string>();
-    const dist1 = sub1.asDistributor();
-    const dist2 = sub2.asDistributor();
     const value: string[] = [];
-    const dist3 = dist1.pipe(concatWith(dist2));
+    const dist3 = new SequentialDistributor(sub1, sub2);
     dist3.subscribe({
       next(data: string) {
         value.push(data);
