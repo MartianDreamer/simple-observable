@@ -16,7 +16,8 @@ export class StateSubject<T> extends Subject<T> {
   }
 
   subscribe(subscriber: Subscriber<T>): Subscription {
+    const subscription: Subscription = super.subscribe(subscriber);
     subscriber.next(this.state);
-    return super.subscribe(subscriber);
+    return subscription;
   }
 }
