@@ -8,16 +8,11 @@ export class BufferedSubject<T> extends Subject<T>{
   }
 
   publish(event: T): void {
-    if (this.completed) {
-      throw new Error("this subject source completed");
-    }
+    super.publish(event);
     if (this.buffer.length === this.size) {
       this.buffer = [...this.buffer.slice(1, this.size), event];
     } else {
       this.buffer.push(event);
-    }
-    for (let subscriber of this.subscribers) {
-      subscriber.next(event);
     }
   }
 
