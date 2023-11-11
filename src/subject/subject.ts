@@ -1,5 +1,5 @@
-import {ConcurrentDistributor} from "../distributor/concurrent.distributor";
-import {Publisher, Subscribable, Subscriber, Subscription} from "../interfaces";
+import {Distributor, Publisher, Subscribable, Subscriber, Subscription} from "../interfaces";
+import {SingleSourceDistributor} from '../distributor/single.source.distributor';
 
 export class Subject<T>
   implements Publisher<T>, Subscribable<T> {
@@ -41,8 +41,8 @@ export class Subject<T>
     }
   }
 
-  public asDistributor(): ConcurrentDistributor<T> {
-    return new ConcurrentDistributor(this);
+  public asDistributor(): Distributor<T> {
+    return new SingleSourceDistributor(this);
   }
 
   isComplete(): boolean {

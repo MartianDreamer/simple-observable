@@ -1,7 +1,7 @@
 import {SourceSubscription, Subscribable, Subscriber, Subscription} from '../interfaces';
 import {AbstractDistributor} from './abstract.distributor';
 
-export abstract class SingleSourceDistributor<T,R> extends AbstractDistributor<R> {
+export abstract class AbstractSingleSourceDistributor<T, R> extends AbstractDistributor<R> {
   protected sourceSubscription: SourceSubscription<T>;
   protected sourceSubscriber: Subscriber<T> = {
     next: (_event: T) => {
@@ -18,6 +18,7 @@ export abstract class SingleSourceDistributor<T,R> extends AbstractDistributor<R
       });
     },
   }
+
   protected constructor(source: Subscribable<T>) {
     super();
     this.sourceSubscription = {
@@ -37,5 +38,29 @@ export abstract class SingleSourceDistributor<T,R> extends AbstractDistributor<R
         this.subscribers = this.subscribers.filter(e => e !== subscriber);
       }
     }
+  }
+}
+
+export class SingleSourceDistributor<T> extends AbstractSingleSourceDistributor<T, T> {
+  protected readonly sourceSubscriber: Subscriber<T> = {
+    next: (event: T) => {
+      this.subscribers.forEach((subscriber: Subscriber<T>) => {
+        subscriber.next(event);
+      })
+    },
+    err: (err: Error) => {
+      this.subscribers.forEach((subscriber: Subscriber<T>) => {
+        if (subscriber.err) subscriber.err(err);
+      });
+    },
+    complete: () => {
+      this.subscribers.forEach((subscriber: Subscriber<T>) => {
+        if (subscriber.complete) subscriber.complete();
+      });
+    }
+  }
+
+  constructor(source: Subscribable<T>) {
+    super(source);
   }
 }

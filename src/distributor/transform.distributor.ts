@@ -1,7 +1,7 @@
 import {MappingFunction, Subscribable, Subscriber} from "../interfaces";
-import {SingleSourceDistributor} from './single.source.distributor';
+import {AbstractSingleSourceDistributor} from './single.source.distributor';
 
-export class TransformDistributor<T, R> extends SingleSourceDistributor<T, R> {
+export class TransformDistributor<T, R> extends AbstractSingleSourceDistributor<T, R> {
   protected readonly transform: MappingFunction<T, R>;
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {

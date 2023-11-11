@@ -1,7 +1,7 @@
 import {Predicate, Subscribable, Subscriber} from '../interfaces';
-import {SingleSourceDistributor} from './single.source.distributor';
+import {AbstractSingleSourceDistributor} from './single.source.distributor';
 
-export class FilteredDistributor<T> extends SingleSourceDistributor<T, T> {
+export class FilteredDistributor<T> extends AbstractSingleSourceDistributor<T, T> {
   protected readonly sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       if (this.predicate(event)) {
