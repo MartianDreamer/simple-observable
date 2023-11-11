@@ -1,9 +1,9 @@
 import { AbstractSubscribable } from "../abstract.subscribable";
-import { Subscriber, Subscription, UnaryOperator } from "../interfaces";
+import {Subscribable, Subscriber, Subscription, UnaryOperator} from "../interfaces";
 
 export class Distributor<T> extends AbstractSubscribable<T> {
-  protected subscribedSources = false;
-  protected readonly sources: AbstractSubscribable<T>[];
+  protected joinedSources: boolean = false;
+  protected readonly sources: Subscribable<T>[];
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
@@ -22,15 +22,15 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     },
   };
 
-  constructor(...sources: AbstractSubscribable<T>[]) {
+  constructor(...sources: Subscribable<T>[]) {
     super();
     this.sources = sources;
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    if (!this.subscribedSources) {
+    if (!this.joinedSources) {
       this.sources.forEach((source) => source.subscribe(this.sourceSubscriber));
-      this.subscribedSources = true;
+      this.joinedSources = true;
     }
     return super.subscribe(subscriber);
   }
@@ -86,10 +86,14 @@ export class Distributor<T> extends AbstractSubscribable<T> {
     op8: UnaryOperator<H, I>
   ): Distributor<I>;
   public pipe(...ops: UnaryOperator<any, any>[]): Distributor<any> {
-    let result: Distributor<any> = this;
+    let result: Subscribable<any> = this;
     for (const op of ops) {
       result = op(result);
     }
-    return result;
+    if (result instanceof Distributor) {
+      return result;
+    } else {
+      return new Distributor(result);
+    }
   }
 }

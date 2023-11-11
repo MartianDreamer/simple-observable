@@ -8,5 +8,5 @@
     "noImplicitAny": true,
     "declaration": true
   },
-  "include": ["src/**/*", "test/distributor/sequentian.distributor.spec.ts", "test/subject/buffered.subject.spec.ts"]
+  "include": ["src/**/*"]
 }

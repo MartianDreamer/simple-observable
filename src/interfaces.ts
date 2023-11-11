@@ -1,10 +1,11 @@
-import { AbstractSubscribable } from "./abstract.subscribable";
-import { Distributor } from "./distributor/distributor";
-
 export interface Subscriber<T> {
   next(event: T): void;
   err?(err: Error): void;
   final?(): void;
+}
+
+export interface Subscribable<T> {
+  subscribe(subscriber: Subscriber<T>): Subscription;
 }
 
 export interface Subscription {
@@ -27,5 +28,9 @@ export interface Predicate<T> {
 }
 
 export interface UnaryOperator<T,R> {
-  (input: AbstractSubscribable<T>): Distributor<R>
+  (input: Subscribable<T>): Subscribable<R>
+}
+
+export interface DistributorSource<T> {
+
 }

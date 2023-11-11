@@ -26,7 +26,7 @@ export class SequentialDistributor<T> extends Distributor<T> {
     },
   };
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    if (this.sources[0] && !this.subscribedSources) {
+    if (this.sources[0] && !this.joinedSources) {
       this.sources[0].subscribe(this.sourceSubscriber);
     }
     this.subscribers = [...this.subscribers, subscriber];

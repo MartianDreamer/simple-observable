@@ -1,6 +1,5 @@
-import { AbstractSubscribable } from "../abstract.subscribable";
-import { Distributor } from "./distributor";
-import { MappingFunction, Subscriber } from "../interfaces";
+import {Distributor} from "./distributor";
+import {MappingFunction, Subscribable, Subscriber} from "../interfaces";
 
 export class TransformationDistributor<T, R> extends Distributor<R> {
   private readonly transform: MappingFunction<T, R>;
@@ -23,8 +22,8 @@ export class TransformationDistributor<T, R> extends Distributor<R> {
     },
   };
 
-  constructor(source: AbstractSubscribable<T>, op: MappingFunction<T, R>);
-  constructor(source: AbstractSubscribable<any>, op: MappingFunction<T, R>) {
+  constructor(source: Subscribable<T>, op: MappingFunction<T, R>);
+  constructor(source: Subscribable<any>, op: MappingFunction<T, R>) {
     super(source);
     this.transform = op;
   }

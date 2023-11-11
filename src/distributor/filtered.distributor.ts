@@ -1,6 +1,5 @@
-import { AbstractSubscribable } from "../abstract.subscribable";
-import { Distributor } from "./distributor";
-import { Predicate, Subscriber } from "../interfaces";
+import {Distributor} from "./distributor";
+import {Predicate, Subscribable, Subscriber} from "../interfaces";
 
 export class FilteredDistributor<T> extends Distributor<T> {
   private readonly predicate: Predicate<T>;
@@ -25,7 +24,7 @@ export class FilteredDistributor<T> extends Distributor<T> {
     },
   };
 
-  constructor(source: AbstractSubscribable<T>, predicate: Predicate<T>) {
+  constructor(source: Subscribable<T>, predicate: Predicate<T>) {
     super(source);
     this.predicate = predicate;
   }
