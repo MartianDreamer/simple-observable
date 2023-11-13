@@ -29,7 +29,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
   public subscribe(subscriber: Subscriber<T>): Subscription {
     this.subscribers = [...this.subscribers, subscriber];
     if (!this.sourceOfSources.subscribed) {
-      const sourceOfSourcesSubscriber: Subscriber<Subscribable<T>> = {
+      this.sourceOfSources.source.subscribe({
         ...this.sourceOfSourcesSubscriber,
         next: (event: Subscribable<T>) => {
           const sourceSubscription: SourceSubscription<T> = {
@@ -47,8 +47,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
             );
           }
         },
-      }
-      this.sourceOfSources.source.subscribe(sourceOfSourcesSubscriber);
+      });
       this.sourceOfSources.subscribed = true;
     }
     return {

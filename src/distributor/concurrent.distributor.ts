@@ -29,7 +29,6 @@ export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
   public subscribe(subscriber: Subscriber<T>): Subscription {
     this.subscribers = [...this.subscribers, subscriber];
     if (!this.sourceOfSources.subscribed) {
-      this.sourceOfSources.subscribed = true;
       this.sourceOfSources.subscription = this.sourceOfSources.source.subscribe(
         {
           ...this.sourceOfSourcesSubscriber,
@@ -63,6 +62,7 @@ export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
           },
         },
       );
+      this.sourceOfSources.subscribed = true;
     }
     // add the subscriber to subscriber array and return a subscription
     return {
