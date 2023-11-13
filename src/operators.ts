@@ -5,13 +5,14 @@ import {
   MappingFunction,
   Predicate,
   Subscribable,
+  SubscribableMappingFunction,
   UnaryOperator,
 } from "./interfaces";
 import { TransformDistributor } from "./distributor/transform.distributor";
 import { SequentialDistributor } from "./distributor/sequential.distributor";
 import { BufferedSubject } from "./subject";
 import { SingleSourceDistributor } from "./distributor/single.source.distributor";
-import {SwitchDistributor} from './distributor/switch.distributor';
+import { SwitchDistributor } from "./distributor/switch.distributor";
 
 export function map<T, R>(fn: MappingFunction<T, R>): UnaryOperator<T, R> {
   return function (distributor: Subscribable<T>): Distributor<R> {
@@ -29,7 +30,9 @@ export function mergeWith<T, R>(
   source: Subscribable<R>,
 ): UnaryOperator<T, T | R> {
   return function (distributor: Subscribable<T>): Distributor<T | R> {
-    return new ConcurrentDistributor<T | R>(of<Subscribable<T | R>>(distributor, source));
+    return new ConcurrentDistributor<T | R>(
+      of<Subscribable<T | R>>(distributor, source),
+    );
   };
 }
 
@@ -50,6 +53,34 @@ export function switchWith<T, R>(
     return new SwitchDistributor<T | R>(
       of<Subscribable<T | R>>(distributor, source),
     );
+  };
+}
+
+export function mergeMap<T, R>(
+  fn: SubscribableMappingFunction<T, R>,
+): UnaryOperator<T, R> {
+  return function (subscribable: Subscribable<T>): Distributor<R> {
+    return new ConcurrentDistributor(
+      new TransformDistributor(subscribable, fn),
+    );
+  };
+}
+
+export function concatMap<T, R>(
+  fn: SubscribableMappingFunction<T, R>,
+): UnaryOperator<T, R> {
+  return function (subscribable: Subscribable<T>): Distributor<R> {
+    return new SequentialDistributor(
+      new TransformDistributor(subscribable, fn),
+    );
+  };
+}
+
+export function switchMap<T, R>(
+  fn: SubscribableMappingFunction<T, R>,
+): UnaryOperator<T, R> {
+  return function (subscribable: Subscribable<T>): Distributor<R> {
+    return new SwitchDistributor(new TransformDistributor(subscribable, fn));
   };
 }
 
