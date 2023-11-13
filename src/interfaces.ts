@@ -35,6 +35,7 @@ export interface SourceSubscription<T> {
   source: Subscribable<T>;
   subscription?: Subscription;
   subscribed: boolean;
+  complete: boolean;
 }
 
 export interface Distributor<T> extends Subscribable<T> {

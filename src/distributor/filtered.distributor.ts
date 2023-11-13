@@ -3,6 +3,7 @@ import {AbstractSingleSourceDistributor} from './single.source.distributor';
 
 export class FilteredDistributor<T> extends AbstractSingleSourceDistributor<T, T> {
   protected readonly sourceSubscriber: Subscriber<T> = {
+    ...super.sourceSubscriber,
     next: (event: T) => {
       if (this.predicate(event)) {
         this.subscribers.forEach((subscriber: Subscriber<T>) => {
@@ -10,16 +11,6 @@ export class FilteredDistributor<T> extends AbstractSingleSourceDistributor<T, T
         })
       }
     },
-    err: (err: Error) => {
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        if (subscriber.err) subscriber.err(err);
-      });
-    },
-    complete: () => {
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        if (subscriber.complete) subscriber.complete();
-      });
-    }
   }
 
   constructor(source: Subscribable<T>, private predicate: Predicate<T>) {

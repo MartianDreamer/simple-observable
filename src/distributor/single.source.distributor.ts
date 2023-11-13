@@ -13,6 +13,7 @@ export abstract class AbstractSingleSourceDistributor<T, R> extends AbstractDist
       });
     },
     complete: () => {
+      this.sourceSubscription.complete = true;
       this.subscribers.forEach((subscriber: Subscriber<R>) => {
         if (subscriber.complete) subscriber.complete();
       });
@@ -23,7 +24,8 @@ export abstract class AbstractSingleSourceDistributor<T, R> extends AbstractDist
     super();
     this.sourceSubscription = {
       source,
-      subscribed: false
+      subscribed: false,
+      complete: false
     }
   }
 
@@ -42,22 +44,14 @@ export abstract class AbstractSingleSourceDistributor<T, R> extends AbstractDist
 }
 
 export class SingleSourceDistributor<T> extends AbstractSingleSourceDistributor<T, T> {
+
   protected readonly sourceSubscriber: Subscriber<T> = {
+    ...super.sourceSubscriber,
     next: (event: T) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
         subscriber.next(event);
       })
     },
-    err: (err: Error) => {
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        if (subscriber.err) subscriber.err(err);
-      });
-    },
-    complete: () => {
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        if (subscriber.complete) subscriber.complete();
-      });
-    }
   }
 
   constructor(source: Subscribable<T>) {
