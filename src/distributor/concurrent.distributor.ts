@@ -1,50 +1,75 @@
-import {Subscribable, Subscriber, Subscription} from "../interfaces";
-import {MultiSourceDistributor} from './multi.source.distributor';
+import {
+  SourceSubscription,
+  Subscribable,
+  Subscriber,
+  Subscription,
+} from "../interfaces";
+import { MultiSourceDistributor } from "./multi.source.distributor";
 
 export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {
     next: (event: T) => {
+      // everytime a source emit an event, distribute the event to all subscribers
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
         subscriber.next(event);
       });
     },
     err: (err: Error) => {
+      // everytime a source emit an error, distribute the event to all subscribers
       this.subscribers.forEach((subscriber: Subscriber<T>) => {
         if (subscriber.err) subscriber.err(err);
       });
     },
   };
 
-  constructor(...sources: Subscribable<T>[]) {
+  constructor(sources: Subscribable<Subscribable<T>>) {
     super(sources);
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    if (!this.isStreaming) {
-      this.sourceSubscriptions.forEach((sourceSubscription) => {
-        sourceSubscription.subscription = sourceSubscription.source.subscribe({
-          ...this.sourceSubscriber,
-          complete: () => {
-            sourceSubscription.subscribed = false;
-            const someNotComplete: boolean = this.sourceSubscriptions
-              .map(e => e.subscribed)
-              .reduce((e1, e2) => e1 || e2, false)
-            if (!someNotComplete) {
-              this.subscribers.forEach((subscriber: Subscriber<T>) => {
-                if (subscriber.complete) subscriber.complete();
-              })
-            }
-          }
-        });
-        sourceSubscription.subscribed = true;
-      })
-      this.isStreaming = true;
-    }
     this.subscribers = [...this.subscribers, subscriber];
-    const self = this;
+    if (!this.sourceOfSources.subscribed) {
+      this.sourceOfSources.subscribed = true;
+      this.sourceOfSources.subscription = this.sourceOfSources.source.subscribe(
+        {
+          ...this.sourceOfSourcesSubscriber,
+          next: (event: Subscribable<T>) => {
+            // create source subscriptions then push it to the source subscription array
+            const sourceSubscription: SourceSubscription<T> = {
+              source: event,
+              subscribed: true,
+              complete: false,
+            };
+            this.sourceSubscriptions.push(sourceSubscription);
+            // subscribe the source
+            sourceSubscription.source.subscribe({
+              ...this.sourceSubscriber,
+              complete: () => {
+                // change complete status of the given source
+                sourceSubscription.complete = true;
+                // check if all the sources in the source subscription array are completed
+                const allCurrentSourcesCompleted: boolean = this.areAllSourcesCompleted();
+                // if the source of sources and all the source in source subscription array are complete, do the complete function of subscribers if they are defined
+                if (
+                  this.sourceOfSources.complete &&
+                  allCurrentSourcesCompleted
+                ) {
+                  this.subscribers.forEach((subscriber: Subscriber<T>) => {
+                    if (subscriber.complete) subscriber.complete();
+                  });
+                }
+              },
+            });
+          },
+        },
+      );
+    }
+    // add the subscriber to subscriber array and return a subscription
     return {
-      unsubscribe() {
-        self.subscribers = self.subscribers.filter((e: Subscriber<T>) => e !== subscriber)
+      unsubscribe: () => {
+        this.subscribers = this.subscribers.filter(
+          (e: Subscriber<T>) => e !== subscriber,
+        );
       },
     };
   }
