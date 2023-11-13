@@ -36,6 +36,7 @@ export interface SourceSubscription<T> {
   subscription?: Subscription;
   subscribed: boolean;
   complete: boolean;
+  alreadySubscribed?: boolean;
 }
 
 export interface Distributor<T> extends Subscribable<T> {
