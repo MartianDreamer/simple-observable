@@ -32,8 +32,8 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    if (this.sourceSubscriptions[0] && !this.isStreaming) {
-      this.sourceSubscriptions[0].subscription = this.sourceSubscriptions[0].source.subscribe(this.sourceSubscriber);
+    if (this.sourceSubscriptions[this.currentSourceIndex] && !this.isStreaming) {
+      this.sourceSubscriptions[this.currentSourceIndex].subscription = this.sourceSubscriptions[this.currentSourceIndex].source.subscribe(this.sourceSubscriber);
     }
     this.subscribers = [...this.subscribers, subscriber];
     return {
