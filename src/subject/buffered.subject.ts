@@ -17,10 +17,9 @@ export class BufferedSubject<T> extends Subject<T>{
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    const subscription: Subscription = super.subscribe(subscriber);
     for (const event of this.buffer) {
       subscriber.next(event);
     }
-    return subscription;
+    return super.subscribe(subscriber);
   }
 }

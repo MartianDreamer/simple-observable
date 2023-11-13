@@ -3,6 +3,8 @@ import {FilteredDistributor} from "./distributor/filtered.distributor";
 import {Distributor, MappingFunction, Predicate, Subscribable, UnaryOperator} from "./interfaces";
 import {TransformDistributor} from "./distributor/transform.distributor";
 import {SequentialDistributor} from "./distributor/sequential.distributor";
+import {BufferedSubject} from './subject';
+import {SingleSourceDistributor} from './distributor/single.source.distributor';
 
 export function map<T, R>(fn: MappingFunction<T, R>): UnaryOperator<T, R> {
   return function (distributor: Subscribable<T>): Distributor<R> {
@@ -30,4 +32,11 @@ export function concatWith<T, R>(
   return function (distributor: Subscribable<T>): Distributor<T | R> {
     return new SequentialDistributor<T | R>(distributor, source);
   };
+}
+
+export function of<T>(...events: T[]): Distributor<T> {
+  const subject: BufferedSubject<T> = new BufferedSubject<T>(events.length);
+  events.forEach(e => subject.publish(e))
+  subject.complete();
+  return new SingleSourceDistributor(subject);
 }

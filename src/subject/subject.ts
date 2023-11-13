@@ -7,10 +7,10 @@ export class Subject<T>
   protected subscribers: Subscriber<T>[] = [];
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    if (this.completed) {
-      throw new Error("this publisher already completed")
-    }
     this.subscribers = [...this.subscribers, subscriber];
+    if (this.completed && subscriber.complete) {
+      subscriber.complete();
+    }
     return {
       unsubscribe: () => {
         this.subscribers = this.subscribers.filter((e: Subscriber<T>) => e !== subscriber)
