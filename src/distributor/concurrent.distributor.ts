@@ -22,7 +22,7 @@ export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
     },
   };
 
-  constructor(sources: Subscribable<Subscribable<T>>) {
+  public constructor(sources: Subscribable<Subscribable<T>>) {
     super(sources);
   }
 
@@ -36,29 +36,32 @@ export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
             // create source subscriptions then push it to the source subscription array
             const sourceSubscription: SourceSubscription<T> = {
               source: event,
-              subscribed: true,
+              subscribed: false,
               complete: false,
             };
             this.sourceSubscriptions.push(sourceSubscription);
             // subscribe the source
-            sourceSubscription.source.subscribe({
-              ...this.sourceSubscriber,
-              complete: () => {
-                // change complete status of the given source
-                sourceSubscription.complete = true;
-                // check if all the sources in the source subscription array are completed
-                const allCurrentSourcesCompleted: boolean = this.areAllSourcesCompleted();
-                // if the source of sources and all the source in source subscription array are complete, do the complete function of subscribers if they are defined
-                if (
-                  this.sourceOfSources.complete &&
-                  allCurrentSourcesCompleted
-                ) {
-                  this.subscribers.forEach((subscriber: Subscriber<T>) => {
-                    if (subscriber.complete) subscriber.complete();
-                  });
-                }
-              },
-            });
+            sourceSubscription.subscription =
+              sourceSubscription.source.subscribe({
+                ...this.sourceSubscriber,
+                complete: () => {
+                  // change complete status of the given source
+                  sourceSubscription.complete = true;
+                  // check if all the sources in the source subscription array are completed
+                  const allCurrentSourcesCompleted: boolean =
+                    this.areAllSourcesCompleted();
+                  // if the source of sources and all the source in source subscription array are complete, do the complete function of subscribers if they are defined
+                  if (
+                    this.sourceOfSources.complete &&
+                    allCurrentSourcesCompleted
+                  ) {
+                    this.subscribers.forEach((subscriber: Subscriber<T>) => {
+                      if (subscriber.complete) subscriber.complete();
+                    });
+                  }
+                },
+              });
+            sourceSubscription.subscribed = true;
           },
         },
       );

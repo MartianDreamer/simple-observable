@@ -22,7 +22,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
     },
   };
 
-  constructor(sources: Subscribable<Subscribable<T>>) {
+  public constructor(sources: Subscribable<Subscribable<T>>) {
     super(sources);
   }
 
@@ -42,9 +42,11 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
           const allSourceAreCompleted: boolean = this.areAllSourcesCompleted();
           this.sourceSubscriptions.push(sourceSubscription);
           if (allSourceAreCompleted) {
-            sourceSubscription.source.subscribe(
-              this.createSourceSubscriber(sourceSubscription),
-            );
+            sourceSubscription.subscription =
+              sourceSubscription.source.subscribe(
+                this.createSourceSubscriber(sourceSubscription),
+              );
+            sourceSubscription.subscribed = true;
           }
         },
       });

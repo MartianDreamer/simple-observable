@@ -1,12 +1,42 @@
-import {SourceSubscription, Subscriber, Subscription} from '../interfaces';
-import {MultiSourceDistributor} from './multi.source.distributor'; // TODO - implement this class
+import {
+  SourceSubscription,
+  Subscribable,
+  Subscriber,
+  Subscription,
+} from "../interfaces";
+import { MultiSourceDistributor } from "./multi.source.distributor";
 
-// TODO - implement this class
 export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
   private markedCanceledSourceIndex: number = 0;
+
+  public constructor(sources: Subscribable<Subscribable<T>>) {
+    super(sources);
+  }
+
   subscribe(subscriber: Subscriber<T>): Subscription {
+    this.subscribers = [...this.subscribers, subscriber];
+    if (!this.sourceOfSources.subscribed) {
+      this.sourceOfSources.source.subscribe({
+        ...this.sourceOfSourcesSubscriber,
+        next: (event: Subscribable<T>) => {
+          const sourceSubscription: SourceSubscription<T> = {
+            source: event,
+            subscribed: false,
+            complete: false,
+          };
+          this.sourceSubscriptions.push(sourceSubscription);
+          sourceSubscription.subscription = sourceSubscription.source.subscribe(
+            this.createSourceSubscriber(sourceSubscription),
+          );
+          sourceSubscription.subscribed = true;
+        },
+      });
+      this.sourceOfSources.subscribed = true;
+    }
     return {
-      unsubscribe() {},
+      unsubscribe: () => {
+        this.subscribers = this.subscribers.filter((e) => e !== subscriber);
+      },
     };
   }
 
@@ -15,25 +45,33 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
   ): Subscriber<T> {
     return {
       next: (event: T) => {
-        if (!!sourceSubscription.alreadySubscribed) {
+        // check if this is the first event
+        if (!sourceSubscription.alreadyEmitted) {
+          sourceSubscription.alreadyEmitted = true;
           const sourceSubscriptionIndex: number =
             this.sourceSubscriptions.indexOf(sourceSubscription);
-          const latePublication: boolean = !!this.sourceSubscriptions
-            .slice(sourceSubscriptionIndex)
-            .find(
-              (sourceSubscription: SourceSubscription<T>) =>
-                sourceSubscription.subscribed,
-            );
-          if (!latePublication) {
-            for (this.markedCanceledSourceIndex; this.markedCanceledSourceIndex < sourceSubscriptionIndex; this.markedCanceledSourceIndex++) {
-              const curSource: SourceSubscription<T> =
+          // check if this source is late
+          const lateSource: boolean = !!this.sourceSubscriptions
+            .slice(sourceSubscriptionIndex + 1)
+            .find((s: SourceSubscription<T>) => s.alreadyEmitted);
+          // if it is not late, cancel all sources before it
+          if (!lateSource) {
+            for (
+              ;
+              this.markedCanceledSourceIndex < sourceSubscriptionIndex;
+              this.markedCanceledSourceIndex++
+            ) {
+              const canceledSource: SourceSubscription<T> =
                 this.sourceSubscriptions[this.markedCanceledSourceIndex];
-              if (curSource.subscription) {
-                curSource.subscription.unsubscribe();
-                curSource.subscription = undefined;
-                curSource.subscribed = false;
+              if (canceledSource.subscription) {
+                canceledSource.subscription.unsubscribe();
+                canceledSource.subscribed = false;
+                canceledSource.subscription = undefined;
               }
             }
+            // else just return and do nothing
+          } else {
+            return;
           }
         }
         this.subscribers.forEach((subscriber: Subscriber<T>) => {
