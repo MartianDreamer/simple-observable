@@ -1,4 +1,4 @@
-## A simple publisher subscriber library in typescript
+# A simple publisher subscriber library in typescript
 
 ## Summary
 
@@ -109,5 +109,5 @@ to manipulate data before consuming it, therefore more flexibility is added to o
                                             Subscriber    Subscriber
 ```
 
-### Implementation
+## Implementation
 
