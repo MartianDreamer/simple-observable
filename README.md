@@ -111,7 +111,7 @@ to manipulate data before consuming it, therefore more flexibility is added to o
 
 ## Implementation
 
-### Types of subject
+### Types of subjects
 
 #### Subject
 
@@ -125,3 +125,16 @@ an event is published.
 
 With this type of subject, the subscriber will only be notified about an event if it subscribes the subject before that
 event is published.
+
+#### BufferedSubject
+
+<strong>BufferedSubject</strong> is a subject which buffers a certain number of events that were published before. To
+create a BufferedSubject, a buffer size n is required. When a new subscriber subscribes a
+BufferedSubject, the next method will be called for all the events in the buffer.
+
+#### StateSubject
+
+<strong>StateSubject</strong> is a subject that has a state. To create a StateSubject, a default state is required. When
+a new subscriber subscribes a StateSubject, the next method will be called for the current state of the StateSubject.
+
+### Types of distributors
