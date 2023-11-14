@@ -1,5 +1,4 @@
 # A simple publisher subscriber library in typescript
-
 ## Summary
 
 ### Interfaces
@@ -141,3 +140,8 @@ BufferedSubject, the next method will be called for all the events in the buffer
 a new subscriber subscribes a StateSubject, the next method will be called for the current state of the StateSubject.
 
 ### Types of distributors
+
+#### Single source distributor
+
+#### Multi-source distributor
+
