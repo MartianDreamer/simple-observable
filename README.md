@@ -111,3 +111,17 @@ to manipulate data before consuming it, therefore more flexibility is added to o
 
 ## Implementation
 
+### Types of subject
+
+#### Subject
+
+<strong>Subject</strong> is a subscribable publisher. It has all publisher's method and subscribable's methods. It also
+provides an asDistributor method which will convert the subject to a distributor, so it would have the pipeline-ability
+of Distributors.
+
+When a subscriber subscribe a subject, the subject will check if it completed. If it completes, it will call the
+complete(if the method is defined) method of the subscriber. Otherwise, it will call the subscriber's next method when
+an event is published.
+
+With this type of subject, the subscriber will only be notified about an event if it subscribes the subject before that
+event is published.
