@@ -8,7 +8,8 @@ export class InterceptDistributor<T> extends AbstractSingleSourceDistributor<
   public constructor(source: Subscribable<T>, intercept: Interceptor<T>) {
     super(source);
     this.sourceSubscriber.next = (event) => {
-      intercept(event);
+      const eventCopy: T = Object.assign({}, event);
+      intercept(eventCopy);
       this.subscribers.forEach((subscriber: Subscriber<T>) =>
         subscriber.next(event),
       );
