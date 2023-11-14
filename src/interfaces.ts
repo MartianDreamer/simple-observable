@@ -28,6 +28,10 @@ export interface MappingFunction<T, R> {
   (input: T): R;
 }
 
+export interface Interceptor<T> {
+  (input: T): void;
+}
+
 export interface Predicate<T> {
   (input: T): boolean;
 }
@@ -116,8 +120,4 @@ export interface Distributor<T> extends Subscribable<T> {
   ): Distributor<J>;
 
   pipe(...ops: UnaryOperator<any, any>[]): Distributor<any>;
-}
-
-export interface SubscribableMappingFunction<T, R> {
-  (input: T): Subscribable<R>
 }

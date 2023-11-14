@@ -56,7 +56,7 @@ export class SingleSourceDistributor<T> extends AbstractSingleSourceDistributor<
   T,
   T
 > {
-  constructor(source: Subscribable<T>) {
+  public constructor(source: Subscribable<T>) {
     super(source);
     this.sourceSubscriber.next = (event) => {
       this.subscribers.forEach((subscriber: Subscriber<T>) =>

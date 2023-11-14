@@ -1,11 +1,10 @@
 import { ConcurrentDistributor } from "./distributor/concurrent.distributor";
 import { FilteredDistributor } from "./distributor/filtered.distributor";
 import {
-  Distributor,
+  Distributor, Interceptor,
   MappingFunction,
   Predicate,
   Subscribable,
-  SubscribableMappingFunction,
   UnaryOperator,
 } from "./interfaces";
 import { TransformDistributor } from "./distributor/transform.distributor";
@@ -13,6 +12,7 @@ import { SequentialDistributor } from "./distributor/sequential.distributor";
 import { BufferedSubject } from "./subject";
 import { SingleSourceDistributor } from "./distributor/single.source.distributor";
 import { SwitchDistributor } from "./distributor/switch.distributor";
+import {InterceptDistributor} from './distributor/intercept.distributor';
 
 export function map<T, R>(fn: MappingFunction<T, R>): UnaryOperator<T, R> {
   return function (distributor: Subscribable<T>): Distributor<R> {
@@ -57,7 +57,7 @@ export function switchWith<T, R>(
 }
 
 export function mergeMap<T, R>(
-  fn: SubscribableMappingFunction<T, R>,
+  fn: MappingFunction<T, Subscribable<R>>,
 ): UnaryOperator<T, R> {
   return function (subscribable: Subscribable<T>): Distributor<R> {
     return new ConcurrentDistributor(
@@ -67,7 +67,7 @@ export function mergeMap<T, R>(
 }
 
 export function concatMap<T, R>(
-  fn: SubscribableMappingFunction<T, R>,
+  fn: MappingFunction<T, Subscribable<R>>,
 ): UnaryOperator<T, R> {
   return function (subscribable: Subscribable<T>): Distributor<R> {
     return new SequentialDistributor(
@@ -77,11 +77,19 @@ export function concatMap<T, R>(
 }
 
 export function switchMap<T, R>(
-  fn: SubscribableMappingFunction<T, R>,
+  fn: MappingFunction<T, Subscribable<R>>,
 ): UnaryOperator<T, R> {
   return function (subscribable: Subscribable<T>): Distributor<R> {
     return new SwitchDistributor(new TransformDistributor(subscribable, fn));
   };
+}
+
+export function tap<T>(
+  interceptor: Interceptor<T>
+): UnaryOperator<T, T> {
+  return function (subscribable: Subscribable<T>): Distributor<T> {
+    return new InterceptDistributor(subscribable, interceptor);
+  }
 }
 
 export function of<T>(...events: T[]): Distributor<T> {
