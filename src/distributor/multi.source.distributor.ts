@@ -1,5 +1,6 @@
 import { AbstractDistributor } from "./abstract.distributor";
-import { SourceSubscription, Subscribable, Subscriber } from "../interfaces";
+import { Subscribable, Subscriber } from "../interfaces";
+import {SourceSubscription} from './interfaces';
 
 export abstract class MultiSourceDistributor<T> extends AbstractDistributor<T> {
   protected readonly sourceSubscriptions: SourceSubscription<T>[] = [];

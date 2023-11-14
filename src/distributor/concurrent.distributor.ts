@@ -1,10 +1,10 @@
 import {
-  SourceSubscription,
   Subscribable,
   Subscriber,
   Subscription,
 } from "../interfaces";
 import { MultiSourceDistributor } from "./multi.source.distributor";
+import {SourceSubscription} from './interfaces';
 
 export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {

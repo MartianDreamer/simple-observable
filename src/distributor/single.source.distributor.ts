@@ -1,10 +1,6 @@
-import {
-  SourceSubscription,
-  Subscribable,
-  Subscriber,
-  Subscription,
-} from "../interfaces";
+import { Subscribable, Subscriber, Subscription } from "../interfaces";
 import { AbstractDistributor } from "./abstract.distributor";
+import { SourceSubscription } from "./interfaces";
 
 export abstract class AbstractSingleSourceDistributor<
   T,

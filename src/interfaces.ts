@@ -40,14 +40,6 @@ export interface UnaryOperator<T, R> {
   (input: Subscribable<T>): Distributor<R>;
 }
 
-export interface SourceSubscription<T> {
-  source: Subscribable<T>;
-  subscription?: Subscription;
-  subscribed: boolean;
-  complete: boolean;
-  alreadyEmitted?: boolean;
-}
-
 export interface Distributor<T> extends Subscribable<T> {
   pipe<B>(op1: UnaryOperator<T, B>): Distributor<B>;
 
