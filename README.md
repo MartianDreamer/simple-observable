@@ -101,12 +101,15 @@ to manipulate data before consuming it, therefore more flexibility is added to o
 
 ```
                                                     Subject
-                                                      |||    
-                                                      |||  
+                                                      ||    
+                                                      ||  
                                                   Distributor    
-                                                 //         \\
                                                 //           \\
-                                            Subscriber    Subscriber
+                                               //             \\
+                                    Distributor                 Distributor
+                                  //           \\             //           \\
+                                 //             \\           //             \\
+                             Subscriber     Subscriber   Subscriber      Subscriber
 ```
 
 ## Implementation
