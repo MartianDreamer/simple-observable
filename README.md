@@ -168,13 +168,13 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
 
 <strong>publish</strong> is used to publish a new event
 
-##### complete(): void
-
-<strong>complete</strong> is called to complete the subject. It would invoke subscribers' complete methods.
-
 ##### throwError(err: Error): void
 
 <strong>throwError</strong> is used to propagate errors to subscribers
+
+##### complete(): void
+
+<strong>complete</strong> is called to complete the subject. It would invoke subscribers' complete methods.
 
 ```
     const subject: Subject<number> = new Subject(); // create an subject
