@@ -181,12 +181,12 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
     try {
         while(condition) {
             const someEvent: string = generateEvent();
-            subject.publish(someEvent);
+            subject.publish(someEvent);             // publish events
             condition = recheckCondition();
         }
     } catch(err) {
-        subject.throwError(err);
+        subject.throwError(err);                    // propagate error to subscribers
     } finally {
-        subject.complete();
+        subject.complete();                         // complete this subject
     }
 ```
