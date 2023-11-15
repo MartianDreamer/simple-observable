@@ -1,5 +1,5 @@
 import { test } from "@jest/globals";
-import { getMockWsDistributor } from "../distributor/mock.util";
+import { getMockWsDistributor } from "../mock.util";
 
 describe("test concatMap operator", () => {
   afterAll((done) => {

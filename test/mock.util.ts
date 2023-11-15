@@ -1,4 +1,4 @@
-import { BufferedSubject, Distributor, Subject } from "../../src";
+import { BufferedSubject, Distributor, Subject } from "../src";
 
 export function sendMockHttpRequest(input: string): Distributor<string> {
   const sub: BufferedSubject<string> = new BufferedSubject<string>(1);
