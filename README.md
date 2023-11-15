@@ -1,4 +1,5 @@
 # A simple publisher subscriber library in typescript
+
 ## Summary
 
 ### Interfaces
@@ -111,9 +112,9 @@ to manipulate data before consuming it, therefore more flexibility is added to o
                              Subscriber     Subscriber   Subscriber      Subscriber
 ```
 
-## Implementation
+## How to
 
-### Types of subjects
+### Subjects
 
 #### Subject
 
@@ -139,9 +140,58 @@ BufferedSubject, the next method will be called for all the events in the buffer
 <strong>StateSubject</strong> is a subject that has a state. To create a StateSubject, a default state is required. When
 a new subscriber subscribes a StateSubject, the next method will be called for the current state of the StateSubject.
 
-### Types of distributors
+#### Methods of subject
 
-#### Single source distributor
+##### subscribe(subscriber: Subscriber\<T\>): void
 
-#### Multi-source distributor
+<strong>subscribe</strong> is used to register a subscriber to the subject.
 
+```
+    const subject: Subject<number> = new Subject(); // create an subject
+    subject.subscribe({
+        next(event: T) {
+            console.log(event); // just log events
+        }
+    }); // register a subscriber with subject
+```
+
+##### publish(event: T): void
+
+<strong>publish</strong> is used to publish a new event
+
+```
+    const subject: Subject<number> = new Subject(); // create an subject
+    subject.publish(10);                            // publish an event (10)
+```
+
+##### asDistributor(): Distributor\<T\>
+
+<strong>asDistributor</strong> is used to convert a subject to a distributor
+
+```
+    const subject: Subject<number> = new Subject(); // create an subject
+    const dist: Distributor<number> = subject.asDistributor(); // convert subject to distributor
+```
+
+##### complete(): void
+
+<strong>complete</strong> is called to complete the subject. It would invoke subscribers' complete methods.
+
+```
+    const subject: Subject<number> = new Subject(); // create an subject
+    subject.complete();                             // complete this subject
+```
+
+##### throwError(err: Error): void
+
+<strong>throwError</strong> is used to propagate errors to subscribers
+
+```
+    const subject: Subject<number> = new Subject(); // create an subject
+    try {
+        const someEvent: string = generateEvent();
+        subject.publish(someEvent);
+    } catch(err) {
+        subject.throwError(err);
+    }
+```
