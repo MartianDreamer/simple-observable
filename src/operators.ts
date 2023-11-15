@@ -13,6 +13,7 @@ import { BufferedSubject } from "./subject";
 import { SingleSourceDistributor } from "./distributor/single.source.distributor";
 import { SwitchDistributor } from "./distributor/switch.distributor";
 import {InterceptDistributor} from './distributor/intercept.distributor';
+import {CancelableDistributor} from './distributor/cancelable.distributor';
 
 export function map<T, R>(fn: MappingFunction<T, R>): UnaryOperator<T, R> {
   return function (distributor: Subscribable<T>): Distributor<R> {
@@ -89,6 +90,14 @@ export function tap<T>(
 ): UnaryOperator<T, T> {
   return function (subscribable: Subscribable<T>): Distributor<T> {
     return new InterceptDistributor(subscribable, interceptor);
+  }
+}
+
+export function takeUntil<T>(
+  notifier: Subscribable<any>
+): UnaryOperator<T, T> {
+  return function (subscribable: Subscribable<T>): Distributor<T> {
+    return new CancelableDistributor(subscribable, notifier);
   }
 }
 
