@@ -155,15 +155,6 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
     }); // register a subscriber with subject
 ```
 
-##### publish(event: T): void
-
-<strong>publish</strong> is used to publish a new event
-
-```
-    const subject: Subject<number> = new Subject(); // create an subject
-    subject.publish(10);                            // publish an event (10)
-```
-
 ##### asDistributor(): Distributor\<T\>
 
 <strong>asDistributor</strong> is used to convert a subject to a distributor
@@ -173,14 +164,13 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
     const dist: Distributor<number> = subject.asDistributor(); // convert subject to distributor
 ```
 
+##### publish(event: T): void
+
+<strong>publish</strong> is used to publish a new event
+
 ##### complete(): void
 
 <strong>complete</strong> is called to complete the subject. It would invoke subscribers' complete methods.
-
-```
-    const subject: Subject<number> = new Subject(); // create an subject
-    subject.complete();                             // complete this subject
-```
 
 ##### throwError(err: Error): void
 
@@ -189,9 +179,14 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
 ```
     const subject: Subject<number> = new Subject(); // create an subject
     try {
-        const someEvent: string = generateEvent();
-        subject.publish(someEvent);
+        while(condition) {
+            const someEvent: string = generateEvent();
+            subject.publish(someEvent);
+            condition = recheckCondition();
+        }
     } catch(err) {
         subject.throwError(err);
+    } finally {
+        subject.complete();
     }
 ```
