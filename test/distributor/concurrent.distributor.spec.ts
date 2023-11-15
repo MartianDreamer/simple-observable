@@ -26,4 +26,23 @@ describe("concurrent distributor", () => {
     expect(value[3]).toBe("t");
     expect(value.length).toBe(4);
   });
+
+  test("wait all source complete before invoke subscribers' complete", () => {
+    const sub1 = new Subject<void>();
+    const sub2 = new Subject<void>();
+    const sub3 = new Subject<void>();
+    const dist = new ConcurrentDistributor(of(sub1, sub2, sub3));
+    let testBool = false;
+    dist.subscribe({
+      next(_event: void) {},
+      complete() {
+        testBool = true;
+      },
+    });
+    sub1.complete();
+    sub3.complete();
+    expect(testBool).toBe(false);
+    sub2.complete();
+    expect(testBool).toBe(true);
+  });
 });

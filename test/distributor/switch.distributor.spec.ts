@@ -26,4 +26,21 @@ describe("switch distributor", () => {
     expect(value[3]).toBe("k");
     expect(value.length).toBe(4);
   });
+
+  test("wait all source complete before invoke subscribers' complete", () => {
+    const sub1 = new Subject<void>();
+    const sub2 = new Subject<void>();
+    const sub3 = new Subject<void>();
+    const dist = new SwitchDistributor(of(sub1, sub2, sub3));
+    let testBool = false;
+    dist.subscribe({
+      next(_event: void) {},
+      complete() {
+        testBool = true;
+      },
+    });
+    sub3.publish();
+    sub3.complete();
+    expect(testBool).toBe(true);
+  });
 });

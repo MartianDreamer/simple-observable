@@ -1,5 +1,5 @@
-import {of, Subject} from "../../src";
-import {SequentialDistributor} from '../../src/distributor/sequential.distributor';
+import { of, Subject } from "../../src";
+import { SequentialDistributor } from "../../src/distributor/sequential.distributor";
 
 describe("sequential distributor", () => {
   afterAll((done) => {
@@ -24,5 +24,24 @@ describe("sequential distributor", () => {
     expect(value[1]).toBe("s");
     expect(value[2]).toBe("t");
     expect(value.length).toBe(3);
+  });
+
+  test("wait all source complete before invoke subscribers' complete", () => {
+    const sub1 = new Subject<void>();
+    const sub2 = new Subject<void>();
+    const sub3 = new Subject<void>();
+    const dist = new SequentialDistributor(of(sub1, sub2, sub3));
+    let testBool = false;
+    dist.subscribe({
+      next(_event: void) {},
+      complete() {
+        testBool = true;
+      },
+    });
+    sub1.complete();
+    sub3.complete();
+    expect(testBool).toBe(false);
+    sub2.complete();
+    expect(testBool).toBe(true);
   });
 });

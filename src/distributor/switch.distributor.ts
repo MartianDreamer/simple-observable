@@ -84,6 +84,7 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
         });
       },
       complete: () => {
+        sourceSubscription.complete = true;
         if (!this.sourceOfSources.complete) {
           return;
         }
