@@ -1,9 +1,15 @@
 import { BufferedSubject, Distributor, Subject } from "../src";
 
-export function sendMockHttpRequest(input: string): Distributor<string> {
-  const sub: BufferedSubject<string> = new BufferedSubject<string>(1);
+export interface MockResponse<T> {
+  response: T;
+}
+
+export function sendMockHttpRequest<T>(input: T): Distributor<MockResponse<T>> {
+  const sub: BufferedSubject<MockResponse<T>> = new BufferedSubject<MockResponse<T>>(1);
   setTimeout(() => {
-    sub.publish(`response for message "${input}"`);
+    sub.publish({
+      response: input
+    });
     sub.complete();
   }, 1000);
   return sub.asDistributor();
