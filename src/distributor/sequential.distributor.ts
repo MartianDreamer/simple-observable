@@ -20,6 +20,6 @@ export class SequentialDistributor<T> extends AbstractDistributor<T> {
   }
 
   private complete(): void {
-
+    
   }
 }
