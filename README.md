@@ -16,7 +16,7 @@ All public interfaces in the library:
 * MappingFunction
 * Interceptor
 
-<strong>Publisher</strong> is a source of events. It has 4 methods which are publish, throwError, complete and
+<b>Publisher</b> is a source of events. It has 4 methods which are publish, throwError, complete and
 isComplete.
 
 ```
@@ -28,7 +28,7 @@ interface Publisher<T> {
 }
 ```
 
-<strong>Subscribable</strong> is an object which can be subscribed, it provides only subscribe method which returns
+<b>Subscribable</b> is an object which can be subscribed, it provides only subscribe method which returns
 a subscription.
 
 ```
@@ -37,7 +37,7 @@ interface Subscribable<T> {
 }
 ```
 
-<strong>Subscriber</strong> is an object which subscribe a subscribable. It has next method to resolve an event, and
+<b>Subscriber</b> is an object which subscribe a subscribable. It has next method to resolve an event, and
 probably has err method and complete method.
 
 ```
@@ -48,7 +48,7 @@ interface Subscriber<T> {
 }
 ```
 
-<strong>Subscription</strong> is an object which is returned after call subscribe method of a subscribable. It has only
+<b>Subscription</b> is an object which is returned after call subscribe method of a subscribable. It has only
 one unsubscription method.
 
 ```
@@ -57,7 +57,7 @@ interface Subscription {
 }
 ```
 
-<strong>Distributor</strong> is a subscribable which can be piped together to manipulate data. It provides subscribe
+<b>Distributor</b> is a subscribable which can be piped together to manipulate data. It provides subscribe
 method and pipe method.
 
 ```
@@ -67,25 +67,25 @@ interface Distributor<T> {
 }
 ```
 
-<strong>UnaryOperator</strong> is a function which has a subscribable input then return a distributor.
+<b>UnaryOperator</b> is a function which has a subscribable input then return a distributor.
 
 ```
 function UnaryOperator<T,R>(subscribable: Subscribable<T>): Distributor<R>
 ```
 
-<strong>Predicate</strong> is a function which has an input then returns a boolean.
+<b>Predicate</b> is a function which has an input then returns a boolean.
 
 ```
 function Predicate<T>(input: T): boolean;
 ```
 
-<strong>MappingFunction</strong> is a function which has an input then map it to another type output.
+<b>MappingFunction</b> is a function which has an input then map it to another type output.
 
 ```
 function MappingFunction<T,R>(input: T): R;
 ```
 
-<strong>Interceptor</strong> is a function which has an input then return nothing, it just uses the input to do
+<b>Interceptor</b> is a function which has an input then return nothing, it just uses the input to do
 something without changing the input.
 
 ```
@@ -118,7 +118,7 @@ to manipulate data before consuming it, therefore more flexibility is added to o
 
 #### Subject
 
-<strong>Subject</strong> is a subscribable publisher. It has all publisher's method and subscribable's methods. It also
+<b>Subject</b> is a subscribable publisher. It has all publisher's method and subscribable's methods. It also
 provides an asDistributor method which will convert the subject to a distributor, so it would have the pipeline-ability
 of Distributors.
 
@@ -131,20 +131,20 @@ event is published.
 
 #### BufferedSubject
 
-<strong>BufferedSubject</strong> is a subject which buffers a certain number of events that were published before. To
+<b>BufferedSubject</b> is a subject which buffers a certain number of events that were published before. To
 create a BufferedSubject, a buffer size n is required. When a new subscriber subscribes a
 BufferedSubject, the next method will be called for all the events in the buffer.
 
 #### StateSubject
 
-<strong>StateSubject</strong> is a subject that has a state. To create a StateSubject, a default state is required. When
+<b>StateSubject</b> is a subject that has a state. To create a StateSubject, a default state is required. When
 a new subscriber subscribes a StateSubject, the next method will be called for the current state of the StateSubject.
 
 #### Methods of subject
 
 ##### subscribe(subscriber: Subscriber\<T\>): void
 
-<strong>subscribe</strong> is used to register a subscriber to the subject.
+<b>subscribe</b> is used to register a subscriber to the subject.
 
 ```
     const subject: Subject<number> = new Subject(); // create an subject
@@ -157,7 +157,7 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
 
 ##### asDistributor(): Distributor\<T\>
 
-<strong>asDistributor</strong> is used to convert a subject to a distributor
+<b>asDistributor</b> is used to convert a subject to a distributor
 
 ```
     const subject: Subject<number> = new Subject(); // create an subject
@@ -166,15 +166,15 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
 
 ##### publish(event: T): void
 
-<strong>publish</strong> is used to publish a new event
+<b>publish</b> is used to publish a new event
 
 ##### throwError(err: Error): void
 
-<strong>throwError</strong> is used to propagate errors to subscribers
+<b>throwError</b> is used to propagate errors to subscribers
 
 ##### complete(): void
 
-<strong>complete</strong> is called to complete the subject. It would invoke subscribers' complete methods.
+<b>complete</b> is called to complete the subject. It would invoke subscribers' complete methods.
 
 ```
     const subject: Subject<number> = new Subject(); // create an subject
@@ -190,3 +190,8 @@ a new subscriber subscribes a StateSubject, the next method will be called for t
         subject.complete();                         // complete this subject
     }
 ```
+## What to do next?
+
+### MultiSourceDistributor refactor
+
+Currently, multi source distributors is so difficult to understand because of the usage of source of data sources. Refactor it to a chain or a list of data sources to make it easier to understand.
