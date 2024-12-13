@@ -1,87 +1,25 @@
 import { Subscribable, Subscriber, Subscription } from "../interfaces";
-import { MultiSourceDistributor } from "./multi.source.distributor";
-import {DataSource} from './interfaces';
+import { AbstractDistributor } from "./abstract.distributor";
 
-export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
-  protected sourceSubscriber: Subscriber<T> = {
-    next: (event: T) => {
-      // everytime a source emit an event, distribute the event to all subscribers
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        subscriber.next(event);
-      });
-    },
-    err: (err: Error) => {
-      // everytime a source emit an error, distribute the event to all subscribers
-      this.subscribers.forEach((subscriber: Subscriber<T>) => {
-        if (subscriber.err) subscriber.err(err);
-      });
-    },
-  };
+export class SequentialDistributor<T> extends AbstractDistributor<T> {
+  private current: Subscribable<T>
+  private source2Memory: (T | Error)[] = []
 
-  public constructor(sources: Subscribable<Subscribable<T>>) {
-    super(sources);
+  constructor(private readonly dataSource1: Subscribable<T>, private readonly dataSource2: Subscribable<T>) {
+    super()
+    this.current = dataSource1
+    this.dataSource2.subscribe({
+      next: (v: T) => this.source2Memory.push(v),
+      err: (e: Error) => this.source2Memory.push(e),
+      complete: () => this.complete()
+    })
   }
 
   public subscribe(subscriber: Subscriber<T>): Subscription {
-    this.subscribers = [...this.subscribers, subscriber];
-    if (!this.sourceOfSources.subscribed) {
-      this.sourceOfSources.source.subscribe({
-        ...this.sourceOfSourcesSubscriber,
-        next: (event: Subscribable<T>) => {
-          const sourceSubscription: DataSource<T> = {
-            source: event,
-            subscribed: true,
-            complete: false,
-          };
-          // check if all sources in sources subscription array completed then push new source into the array
-          // if all sources completed, subscribe the new source
-          const allSourceAreCompleted: boolean = this.areAllSourcesCompleted();
-          this.sourceSubscriptions.push(sourceSubscription);
-          if (allSourceAreCompleted) {
-            sourceSubscription.subscription =
-              sourceSubscription.source.subscribe(
-                this.createSourceSubscriber(sourceSubscription),
-              );
-            sourceSubscription.subscribed = true;
-          }
-        },
-      });
-      this.sourceOfSources.subscribed = true;
-    }
-    return {
-      unsubscribe: () => {
-        this.subscribers = this.subscribers.filter((e) => e !== subscriber);
-      },
-    };
+    throw new Error("Method not implemented.");
   }
 
-  private createSourceSubscriber(
-    sourceSubscription: DataSource<T>,
-  ): Subscriber<T> {
-    return {
-      ...this.sourceSubscriber,
-      complete: () => {
-        sourceSubscription.complete = true;
-        // check if all the sources in sources array completed, if yes and source of sources completed as well, run all subscriber complete methods.
-        const allSourceAreCompleted = this.areAllSourcesCompleted();
-        if (allSourceAreCompleted && this.sourceOfSources.complete) {
-          this.subscribers.forEach((subscriber: Subscriber<T>) => {
-            if (subscriber.complete) subscriber.complete();
-          });
-          // else if some sources has not completed, subscribe the next available source, if there is no available source, do nothing
-          // the next time source of sources emits a new source, all the sources have completed then the new source would be subscribed
-        } else if (!allSourceAreCompleted) {
-          const nextSourceIndex: number =
-            this.sourceSubscriptions.indexOf(sourceSubscription) + 1;
-          if (nextSourceIndex < this.sourceSubscriptions.length) {
-            const nextSource: DataSource<T> =
-              this.sourceSubscriptions[nextSourceIndex];
-            nextSource.source.subscribe(
-              this.createSourceSubscriber(nextSource),
-            );
-          }
-        }
-      },
-    };
+  private complete(): void {
+
   }
 }
