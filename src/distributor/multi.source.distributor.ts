@@ -1,10 +1,10 @@
 import { AbstractDistributor } from "./abstract.distributor";
 import { Subscribable, Subscriber } from "../interfaces";
-import {SourceSubscription} from './interfaces';
+import {DataSource} from './interfaces';
 
 export abstract class MultiSourceDistributor<T> extends AbstractDistributor<T> {
-  protected readonly sourceSubscriptions: SourceSubscription<T>[] = [];
-  protected readonly sourceOfSources: SourceSubscription<Subscribable<T>>;
+  protected readonly sourceSubscriptions: DataSource<T>[] = [];
+  protected readonly sourceOfSources: DataSource<Subscribable<T>>;
   protected readonly sourceOfSourcesSubscriber: Subscriber<Subscribable<T>> = {
     next: (_event: Subscribable<T>) => {
       // this method need to be overridden
@@ -32,7 +32,7 @@ export abstract class MultiSourceDistributor<T> extends AbstractDistributor<T> {
   protected areAllSourcesCompleted(): boolean {
     return this.sourceSubscriptions
       .map(
-        (sourceSubscription: SourceSubscription<T>) =>
+        (sourceSubscription: DataSource<T>) =>
           sourceSubscription.complete,
       )
       .reduce((s1: boolean, s2: boolean) => s1 && s2, true);

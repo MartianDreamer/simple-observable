@@ -1,12 +1,12 @@
 import { Subscribable, Subscriber, Subscription } from "../interfaces";
 import { AbstractDistributor } from "./abstract.distributor";
-import { SourceSubscription } from "./interfaces";
+import { DataSource } from "./interfaces";
 
 export abstract class AbstractSingleSourceDistributor<
   T,
   R,
 > extends AbstractDistributor<R> {
-  protected sourceSubscription: SourceSubscription<T>;
+  protected sourceSubscription: DataSource<T>;
   protected sourceSubscriber: Subscriber<T> = {
     next: (_event: T) => {
       // this method must be overridden

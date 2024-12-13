@@ -4,7 +4,7 @@ import {
   Subscription,
 } from "../interfaces";
 import { MultiSourceDistributor } from "./multi.source.distributor";
-import {SourceSubscription} from './interfaces';
+import {DataSource} from './interfaces';
 
 export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
   private markedCanceledSourceIndex: number = 0;
@@ -19,7 +19,7 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
       this.sourceOfSources.source.subscribe({
         ...this.sourceOfSourcesSubscriber,
         next: (event: Subscribable<T>) => {
-          const sourceSubscription: SourceSubscription<T> = {
+          const sourceSubscription: DataSource<T> = {
             source: event,
             subscribed: false,
             complete: false,
@@ -41,7 +41,7 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
   }
 
   private createSourceSubscriber(
-    sourceSubscription: SourceSubscription<T>,
+    sourceSubscription: DataSource<T>,
   ): Subscriber<T> {
     return {
       next: (event: T) => {
@@ -53,7 +53,7 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
           // check if this source is late
           const lateSource: boolean = !!this.sourceSubscriptions
             .slice(sourceSubscriptionIndex + 1)
-            .find((s: SourceSubscription<T>) => s.alreadyEmitted);
+            .find((s: DataSource<T>) => s.alreadyEmitted);
           // if it is not late, cancel all sources before it
           if (!lateSource) {
             for (
@@ -61,7 +61,7 @@ export class SwitchDistributor<T> extends MultiSourceDistributor<T> {
               this.markedCanceledSourceIndex < sourceSubscriptionIndex;
               this.markedCanceledSourceIndex++
             ) {
-              const canceledSource: SourceSubscription<T> =
+              const canceledSource: DataSource<T> =
                 this.sourceSubscriptions[this.markedCanceledSourceIndex];
               if (canceledSource.subscription) {
                 canceledSource.subscription.unsubscribe();

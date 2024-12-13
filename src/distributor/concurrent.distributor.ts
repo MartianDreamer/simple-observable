@@ -4,7 +4,7 @@ import {
   Subscription,
 } from "../interfaces";
 import { MultiSourceDistributor } from "./multi.source.distributor";
-import {SourceSubscription} from './interfaces';
+import {DataSource} from './interfaces';
 
 export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {
@@ -34,7 +34,7 @@ export class ConcurrentDistributor<T> extends MultiSourceDistributor<T> {
           ...this.sourceOfSourcesSubscriber,
           next: (event: Subscribable<T>) => {
             // create source subscriptions then push it to the source subscription array
-            const sourceSubscription: SourceSubscription<T> = {
+            const sourceSubscription: DataSource<T> = {
               source: event,
               subscribed: false,
               complete: false,

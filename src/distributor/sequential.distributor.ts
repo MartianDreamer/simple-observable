@@ -1,6 +1,6 @@
 import { Subscribable, Subscriber, Subscription } from "../interfaces";
 import { MultiSourceDistributor } from "./multi.source.distributor";
-import {SourceSubscription} from './interfaces';
+import {DataSource} from './interfaces';
 
 export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
   protected sourceSubscriber: Subscriber<T> = {
@@ -28,7 +28,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
       this.sourceOfSources.source.subscribe({
         ...this.sourceOfSourcesSubscriber,
         next: (event: Subscribable<T>) => {
-          const sourceSubscription: SourceSubscription<T> = {
+          const sourceSubscription: DataSource<T> = {
             source: event,
             subscribed: true,
             complete: false,
@@ -56,7 +56,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
   }
 
   private createSourceSubscriber(
-    sourceSubscription: SourceSubscription<T>,
+    sourceSubscription: DataSource<T>,
   ): Subscriber<T> {
     return {
       ...this.sourceSubscriber,
@@ -74,7 +74,7 @@ export class SequentialDistributor<T> extends MultiSourceDistributor<T> {
           const nextSourceIndex: number =
             this.sourceSubscriptions.indexOf(sourceSubscription) + 1;
           if (nextSourceIndex < this.sourceSubscriptions.length) {
-            const nextSource: SourceSubscription<T> =
+            const nextSource: DataSource<T> =
               this.sourceSubscriptions[nextSourceIndex];
             nextSource.source.subscribe(
               this.createSourceSubscriber(nextSource),
